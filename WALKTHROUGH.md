@@ -9,7 +9,7 @@ The terminal now features a high-density TradingView Advanced Chart widget.
 - **Dynamic Reload**: Switching symbols via the trending list or selector instantly reloads the chart for the new pair.
 - **Unified Style**: The widget uses a dark theme and is integrated seamlessly into the draggable grid.
 
-![TradingView Chart Integration](/Users/mehdi/.gemini/antigravity/brain/c920e8ea-df7a-4576-8820-a50b586487db/initial_view_terminal_1771208772624.png)
+
 
 ## 🔗 Interactive News Headlines
 News headlines are no longer static text.
