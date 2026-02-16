@@ -1,0 +1,121 @@
+/* ===== MATTE BLOOMBERG DESIGN SYSTEM ===== */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+    /* --- Core Palette (Professional Matte) --- */
+    --bg-primary: #0c1017;
+    --bg-secondary: #111827;
+    --bg-tertiary: #1e293b;
+    --bg-elevated: #1a2332;
+
+    --border-primary: #1e293b;
+    --border-secondary: #334155;
+
+    --text-primary: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+
+    /* --- Semantic Colors (Matte, not neon) --- */
+    --color-long: #10b981;
+    /* Emerald */
+    --color-long-dim: #065f46;
+    --color-short: #f43f5e;
+    /* Rose */
+    --color-short-dim: #881337;
+    --color-warning: #f59e0b;
+    /* Amber */
+    --color-warning-dim: #78350f;
+    --color-info: #38bdf8;
+    /* Sky */
+    --color-info-dim: #0c4a6e;
+    --color-stress: #a78bfa;
+    /* Violet */
+    --color-stress-dim: #4c1d95;
+    --color-neutral: #475569;
+
+    /* --- Accent --- */
+    --accent-cyan: #22d3ee;
+    --accent-cyan-dim: rgba(34, 211, 238, 0.15);
+
+    /* --- Typography --- */
+    --font-mono: 'JetBrains Mono', 'Roboto Mono', monospace;
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-secondary);
+    border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+}
+
+/* ApexCharts Overrides */
+.apexcharts-tooltip {
+    background: var(--bg-elevated) !important;
+    border-color: var(--border-secondary) !important;
+    color: var(--text-primary) !important;
+    font-family: var(--font-mono) !important;
+    font-size: 0.7rem !important;
+}
+
+.apexcharts-tooltip-title {
+    background: var(--bg-secondary) !important;
+    border-bottom: 1px solid var(--border-primary) !important;
+}
+
+.apexcharts-text {
+    fill: var(--text-muted) !important;
+}
+
+/* ===== GLOBAL TOOLTIP (body-appended by directive) ===== */
+.global-tooltip {
+    position: fixed;
+    z-index: 10000;
+    background: #0c1017;
+    color: #94a3b8;
+    border: 1px solid #334155;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-family: 'Inter', -apple-system, sans-serif;
+    line-height: 1.5;
+    max-width: 300px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+}
+
+/* Tooltip trigger styling */
+[appTooltip] {
+    cursor: help;
+    border-bottom: 1px dotted #475569;
+}
