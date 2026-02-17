@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.8.0] - 2026-02-17
+
+### Added
+- **Momentum Scanner Widget**: New dashboard widget that monitors all USDT futures pairs for RSI/Volatility signals.
+- **Backend Signal Engine**: Integrated `SignalScanner` powered by Binance Firehose (all-ticker socket).
+- **Click-to-Sync**: Clicking any scanner signal instantly navigates the entire terminal to that symbol.
+- **SQLite Persistence**: Scanner signals are persisted to `binance_public_scanner.db` and loaded on startup.
+- **Top-Trader Sentiment**: Rate-limited (2/min) integration of top-trader positioning ratios for detected signals.
+
 ## [0.7.0] - 2026-02-16
 
 ### Added

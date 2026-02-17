@@ -56,6 +56,7 @@ class MarketState:
     # News
     global_news: List[Dict] = field(default_factory=list)
     asset_news: List[Dict] = field(default_factory=list)
+    scanner_signals: List[Dict] = field(default_factory=list) # Signals from scanner.py
 
     @property
     def basis(self) -> float:
@@ -105,6 +106,11 @@ class MarketState:
         if len(self.liquidations) > 50:
             self.liquidations.pop(0)
 
+    def add_scanner_signal(self, signal: Dict):
+        self.scanner_signals.append(signal)
+        if len(self.scanner_signals) > 30:
+            self.scanner_signals.pop(0)
+
     def to_dict(self):
         return {
             "symbol": self.symbol,
@@ -142,5 +148,6 @@ class MarketState:
             "news": {
                 "global": self.global_news,
                 "asset": self.asset_news
-            }
+            },
+            "scannerSignals": self.scanner_signals
         }

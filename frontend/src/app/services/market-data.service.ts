@@ -48,6 +48,14 @@ export interface MarketState {
         global: { title: string; url: string; source: string }[];
         asset: { title: string; url: string; source: string }[];
     };
+    scannerSignals?: {
+        timestamp: string;
+        symbol: string;
+        price: number;
+        rsi: number;
+        delta: number;
+        top_ratio: number;
+    }[];
 }
 
 @Injectable({

@@ -8,6 +8,7 @@ import { MarketStressComponent } from '../market-stress/market-stress.component'
 import { SymbolSelectorComponent } from '../symbol-selector/symbol-selector.component';
 import { NewsFeedComponent } from '../news-feed/news-feed.component';
 import { TradingviewChartComponent } from '../tradingview-chart/tradingview-chart.component';
+import { ScannerWidgetComponent } from '../scanner-widget/scanner-widget.component';
 import { Observable } from 'rxjs';
 import { CdkDragDrop, moveItemInArray, CdkDrag, CdkDropList, CdkDragHandle } from '@angular/cdk/drag-drop';
 
@@ -23,6 +24,7 @@ import { CdkDragDrop, moveItemInArray, CdkDrag, CdkDropList, CdkDragHandle } fro
     SymbolSelectorComponent,
     NewsFeedComponent,
     TradingviewChartComponent,
+    ScannerWidgetComponent,
     CdkDrag,
     CdkDropList,
     CdkDragHandle
@@ -106,6 +108,9 @@ import { CdkDragDrop, moveItemInArray, CdkDrag, CdkDropList, CdkDragHandle } fro
 
           <!-- Sentiment (Integrated LunarCrush) -->
           <app-news-feed *ngIf="widgetId === 'sentiment'"></app-news-feed>
+
+          <!-- Scanner (New) -->
+          <app-scanner-widget *ngIf="widgetId === 'scanner'"></app-scanner-widget>
 
           <!-- Drag Handle -->
           <div class="drag-handle" cdkDragHandle>
@@ -332,18 +337,18 @@ import { CdkDragDrop, moveItemInArray, CdkDrag, CdkDropList, CdkDragHandle } fro
 export class TerminalComponent implements OnInit {
   state$: Observable<MarketState | null>;
   isConnected$: Observable<boolean>;
-  widgetOrder: string[] = ['chart', 'positioning', 'momentum', 'pain', 'sentiment'];
+  widgetOrder: string[] = ['chart', 'positioning', 'momentum', 'pain', 'sentiment', 'scanner'];
 
   constructor(private marketData: MarketDataService) {
     this.state$ = this.marketData.state$;
     this.isConnected$ = this.marketData.isConnected$;
 
     // Restore layout
-    const saved = localStorage.getItem('terminal_layout_v3');
+    const saved = localStorage.getItem('terminal_layout_v4');
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length === 5) {
+        if (Array.isArray(parsed) && parsed.length === 6) {
           this.widgetOrder = parsed;
         }
       } catch (e) { }
@@ -354,6 +359,6 @@ export class TerminalComponent implements OnInit {
 
   onDrop(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.widgetOrder, event.previousIndex, event.currentIndex);
-    localStorage.setItem('terminal_layout_v3', JSON.stringify(this.widgetOrder));
+    localStorage.setItem('terminal_layout_v4', JSON.stringify(this.widgetOrder));
   }
 }

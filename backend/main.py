@@ -8,6 +8,7 @@ import time
 import aiohttp
 from market_state import MarketState
 from binance_client import BinanceClient
+from scanner import SignalScanner
 
 # Configuration
 INITIAL_SYMBOL = "BTCUSDT"
@@ -30,6 +31,7 @@ app.add_middleware(
 # Global State
 market_state = MarketState(symbol=INITIAL_SYMBOL)
 binance_client = BinanceClient(symbol=INITIAL_SYMBOL, state=market_state)
+scanner = SignalScanner(state=market_state)
 
 # News cache
 _news_cache = {"data": [], "ts": 0}
@@ -66,14 +68,23 @@ async def startup_event():
     asyncio.create_task(lunarcrush_sse_listener())
     asyncio.create_task(global_news_poll_task())
     asyncio.create_task(asset_news_poll_task())
+    
+    # Load initial scanner signals
+    market_state.scanner_signals = scanner.get_recent_signals(limit=30)
+    await scanner.start()
 
 @app.on_event("shutdown")
 async def shutdown_event():
     await binance_client.stop()
+    await scanner.stop()
 
 @app.get("/symbols")
 async def get_symbols():
     return await binance_client.get_available_symbols()
+
+@app.get("/signals")
+async def get_signals():
+    return scanner.get_recent_signals()
 
 @app.get("/news")
 async def get_news():

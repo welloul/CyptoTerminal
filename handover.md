@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> All project changes MUST be maintained in `handover.md` and `changelog.md`.
+
 # Handover Document
 
 ## Project: High-Density Crypto Terminal
@@ -22,8 +25,10 @@ A real-time "Bloomberg-style" trading terminal visualizing market tension using 
 | `backend/market_state.py` | Central data model (MarketState) + social buffers |
 | `backend/binance_client.py` | Binance WebSocket + REST client |
 | `backend/main.py` | FastAPI server + LunarCrush REST & SSE listeners |
+| `backend/scanner.py` | All-ticker momentum scanner + SQLite persistence |
 | `frontend/src/styles.scss` | Global matte design system |
 | `frontend/src/app/services/market-data.service.ts` | RxJS WebSocket service (now includes social data) |
+| `frontend/src/app/components/scanner-widget/` | Momentum Scanner signal feed |
 | `frontend/src/app/components/terminal/` | Draggable grid layout |
 | `frontend/src/app/components/news-feed/` | Combined Sentiment & Social Dashboard |
 
@@ -37,6 +42,7 @@ A real-time "Bloomberg-style" trading terminal visualizing market tension using 
 |----------|--------|-------------|
 | `/ws` | WebSocket | Real-time market state + Social Pulse stream |
 | `/symbols` | GET | USDT futures pairs list |
+| `/signals` | GET | Recent scanner detection history |
 | `/news` | GET | Fear & Greed + Trending coins |
 | `/health` | GET | Server health check |
 
@@ -45,7 +51,8 @@ A real-time "Bloomberg-style" trading terminal visualizing market tension using 
 - **Backend**: FastAPI, aiohttp (Binance, LunarCrush, CryptoCompare, Fear & Greed, CoinGecko).
 - **Data Streams**: Binance WS/REST, LunarCrush REST/SSE, CryptoCompare News REST.
 
-### Current Status (v0.6.0)
+### Current Status (v0.8.0)
+- **Momentum Scanner**: Real-time volatility detection across 200+ symbols.
 - **Top News Intelligence**: Dual-row scrolling tickers (Global Pulse + Asset-Specific Context).
 - **Interactive Exploration**: Click-to-Focus trending list for rapid asset switching and discovery.
 - **Readability**: Marquee animation slowed to 240s with hover-pause behavior.
