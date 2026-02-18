@@ -238,7 +238,7 @@ export class NewsFeedComponent implements OnInit, OnDestroy {
   }
 
   fetchGlobalSentiment(): void {
-    this.http.get<SentimentData>('http://localhost:8000/news').subscribe({
+    this.http.get<SentimentData>(`${this.marketData.apiUrl}/news`).subscribe({
       next: (data) => {
         this.fng = data.fearGreed;
         this.trending = data.trending || [];

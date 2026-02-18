@@ -128,7 +128,7 @@ export class SymbolSelectorComponent implements OnInit {
   }
 
   loadSymbols() {
-    this.http.get<SymbolInfo[]>('http://localhost:8000/symbols').subscribe({
+    this.http.get<SymbolInfo[]>(`${this.marketData.apiUrl}/symbols`).subscribe({
       next: (data) => {
         this.allSymbols = data;
         this.sortSymbols(this.sortBy);

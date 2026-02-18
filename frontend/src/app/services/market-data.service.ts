@@ -62,6 +62,7 @@ export interface MarketState {
     providedIn: 'root'
 })
 export class MarketDataService {
+    public apiUrl: string;
     private socket$: WebSocketSubject<any>;
     private stateSubject = new BehaviorSubject<MarketState | null>(null);
 
@@ -71,9 +72,8 @@ export class MarketDataService {
     constructor() {
         // Switch between Local and Production Backend
         const isLocal = window.location.hostname === 'localhost';
-        const wsUrl = isLocal
-            ? 'ws://localhost:8000/ws'
-            : 'wss://cyptoterminal.onrender.com/ws';
+        this.apiUrl = isLocal ? 'http://localhost:8000' : 'https://cyptoterminal.onrender.com';
+        const wsUrl = isLocal ? 'ws://localhost:8000/ws' : 'wss://cyptoterminal.onrender.com/ws';
 
         this.socket$ = webSocket({
             url: wsUrl,
