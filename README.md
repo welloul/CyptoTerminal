@@ -57,7 +57,7 @@ The frontend is the **State Visualizer**. It is optimized for "Information Densi
 Each widget is designed to answer a specific market question.
 
 ### 1. Momentum Scanner (NEW)
-*   **Momentum Scanner**: Real-time volatility detection across 200+ symbols using Binance Firehose.
+*   **Momentum Scanner**: Real-time volatility detection across 200+ symbols. Signals trigger on >1.5% momentum in 5m combined with RSI extremes or relative volume spikes (>1.5x avg).
 *   **DPE Efficiency Score**: Institutional absorption and divergence engine with 10-point scale and "Market Story" alerts.
 *   **CVD Fix**: Resolved broken trend chart by properly buffering per-minute historical data in the backend.
 *   **SQLite Persistence**: Scanner signals are stored in `binance_public_scanner.db`.

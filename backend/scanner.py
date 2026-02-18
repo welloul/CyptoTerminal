@@ -80,9 +80,8 @@ class SignalScanner:
                             open_price = float(item['o'])
                             price_change = ((curr_price - open_price) / open_price) * 100
 
-                            # Check if price move is > 2.5% (Eased from 3%)
-                            if abs(price_change) > 2.5:
-                                self.state.scanner_status = f"Analyzing {symbol} ({price_change:+.1f}%)"
+                            # Candidate Filter: Only analyze if move > 1% (Eased from 2.5%)
+                            if abs(price_change) > 1.0:
                                 now = time.time()
                                 
                                 # 2-Minute Cooldown logic
@@ -93,43 +92,51 @@ class SignalScanner:
                                 klines = await client.futures_klines(symbol=symbol, interval='1m', limit=50)
                                 df = pd.DataFrame(klines, columns=['time','o','h','l','c','v','ct','qv','n','tb','tq','i']).astype(float)
                                 
-                                # RSI & Volume Checks
+                                # 5-minute change
+                                price_5m_ago = df['o'].iloc[-5]
+                                price_now = df['c'].iloc[-1]
+                                momentum_change = ((price_now - price_5m_ago) / price_5m_ago) * 100
+
+                                # RSI & Volume Spike Detection
                                 rsi_series = self.calculate_rsi(df['c'], period=14)
                                 curr_rsi = rsi_series.iloc[-1]
-                                vol_decreasing = df['v'].iloc[-1] < df['v'].iloc[-2] < df['v'].iloc[-3]
+                                
+                                # Volume spike: current volume > 1.5x average of last 10 candles
+                                avg_vol = df['v'].iloc[-11:-1].mean()
+                                vol_spike = df['v'].iloc[-1] > (avg_vol * 1.5)
 
-                                if vol_decreasing:
-                                    # Conditions for Long (Oversold) or Short (Overbought)
-                                    is_short_signal = price_change > 0 and curr_rsi > 65
-                                    is_long_signal = price_change < 0 and curr_rsi < 35
+                                # Signal Logic: Recent Momentum + RSI Extremes + Volume Activity
+                                is_short_signal = momentum_change > 1.5 and curr_rsi > 70
+                                is_long_signal = momentum_change < -1.5 and curr_rsi < 30
+                                is_breakout = abs(momentum_change) > 2.0 and vol_spike
 
-                                    if is_short_signal or is_long_signal:
-                                        self.state.scanner_status = f"SIGNAL DETECTED: {symbol}"
-                                        df['delta'] = df['tb'] - (df['v'] - df['tb'])
-                                        cvd = df['delta'].sum()
-                                        sentiment = await self.get_top_trader_sentiment_limited(client, symbol)
-                                        
-                                        self.last_alert_time[symbol] = now
-                                        signal = {
-                                            "timestamp": datetime.now().isoformat(),
-                                            "symbol": symbol,
-                                            "price": curr_price,
-                                            "rsi": float(curr_rsi),
-                                            "delta": float(cvd),
-                                            "top_ratio": sentiment
-                                        }
-                                        
-                                        self.save_to_sqlite(signal)
-                                        self.state.add_scanner_signal(signal)
-                                        
-                                        side = "SHORT" if is_short_signal else "LONG"
-                                        logger.info(f"detected {side} SIGNAL: {symbol} | RSI: {curr_rsi:.2f}")
-                                        
-                                        async def reset_status():
-                                            await asyncio.sleep(5)
-                                            if self._running:
-                                                self.state.scanner_status = "Active | Monitoring 200+ symbols"
-                                        asyncio.create_task(reset_status())
+                                if is_short_signal or is_long_signal or is_breakout:
+                                    self.state.scanner_status = f"SIGNAL DETECTED: {symbol}"
+                                    df['delta'] = df['tb'] - (df['v'] - df['tb'])
+                                    cvd = df['delta'].sum()
+                                    sentiment = await self.get_top_trader_sentiment_limited(client, symbol)
+                                    
+                                    self.last_alert_time[symbol] = now
+                                    signal = {
+                                        "timestamp": datetime.now().isoformat(),
+                                        "symbol": symbol,
+                                        "price": curr_price,
+                                        "rsi": float(curr_rsi),
+                                        "delta": float(cvd),
+                                        "top_ratio": sentiment
+                                    }
+                                    
+                                    self.save_to_sqlite(signal)
+                                    self.state.add_scanner_signal(signal)
+                                    
+                                    side = "SHORT" if is_short_signal else "LONG"
+                                    logger.info(f"detected {side} SIGNAL: {symbol} | RSI: {curr_rsi:.2f}")
+                                    
+                                    async def reset_status():
+                                        await asyncio.sleep(5)
+                                        if self._running:
+                                            self.state.scanner_status = "Active | Monitoring 200+ symbols"
+                                    asyncio.create_task(reset_status())
 
                 await client.close_connection()
             except Exception as e:
