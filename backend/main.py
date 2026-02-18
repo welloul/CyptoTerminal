@@ -28,6 +28,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/")
+async def root():
+    return {
+        "status": "online",
+        "service": "CryptoTerminal.ly API",
+        "version": "0.8.0",
+        "binance_ws": "connected",
+        "endpoints": ["/ws", "/symbols", "/signals", "/news"]
+    }
+
 # Global State
 market_state = MarketState(symbol=INITIAL_SYMBOL)
 binance_client = BinanceClient(symbol=INITIAL_SYMBOL, state=market_state)

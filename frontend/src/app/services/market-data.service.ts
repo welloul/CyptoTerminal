@@ -69,9 +69,11 @@ export class MarketDataService {
     public isConnected$ = new BehaviorSubject<boolean>(false);
 
     constructor() {
-        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        const host = window.location.hostname === 'localhost' ? 'localhost:8000' : window.location.host;
-        const wsUrl = `${protocol}//${host}/ws`;
+        // Switch between Local and Production Backend
+        const isLocal = window.location.hostname === 'localhost';
+        const wsUrl = isLocal
+            ? 'ws://localhost:8000/ws'
+            : 'wss://cyptoterminal.onrender.com/ws';
 
         this.socket$ = webSocket({
             url: wsUrl,
