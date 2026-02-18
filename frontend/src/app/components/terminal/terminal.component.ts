@@ -75,6 +75,9 @@ import { CdkDragDrop, moveItemInArray, CdkDrag, CdkDropList, CdkDragHandle } fro
       <!-- Header -->
       <header class="header">
         <div class="header-left">
+          <a href="https://t.me/+218910999494" target="_blank" rel="noopener noreferrer" class="contact-link" title="Contact Developer">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.12.02-1.96 1.25-5.54 3.69-.52.36-1 .53-1.42.52-.47-.01-1.37-.26-2.03-.48-.82-.27-1.47-.42-1.42-.88.03-.24.35-.49.96-.75 3.78-1.65 6.31-2.74 7.58-3.27 3.61-1.51 4.35-1.77 4.84-1.78.11 0 .35.03.5.16.12.1.16.23.18.33.02.11.02.24.01.37z" fill="currentColor"/></svg>
+          </a>
           <app-symbol-selector></app-symbol-selector>
           <div class="price-block">
             <span class="price">{{state.price | number:'1.2-2'}}</span>
@@ -246,7 +249,29 @@ import { CdkDragDrop, moveItemInArray, CdkDrag, CdkDropList, CdkDragHandle } fro
     .header-left {
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: 12px;
+    }
+    .contact-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(0, 136, 204, 0.1);
+      color: #0088cc;
+      transition: all 0.2s;
+      border: 1px solid rgba(0, 136, 204, 0.2);
+    }
+    .contact-link:hover {
+      background: #0088cc;
+      color: white;
+      transform: scale(1.1);
+      box-shadow: 0 0 12px rgba(0, 136, 204, 0.4);
+    }
+    .contact-link svg {
+      width: 20px;
+      height: 20px;
     }
     .price-block {
       display: flex;
