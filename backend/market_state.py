@@ -57,6 +57,7 @@ class MarketState:
     global_news: List[Dict] = field(default_factory=list)
     asset_news: List[Dict] = field(default_factory=list)
     scanner_signals: List[Dict] = field(default_factory=list) # Signals from scanner.py
+    scanner_status: str = "Initializing..."
 
     @property
     def basis(self) -> float:
@@ -149,5 +150,6 @@ class MarketState:
                 "global": self.global_news,
                 "asset": self.asset_news
             },
-            "scannerSignals": self.scanner_signals
+            "scannerSignals": self.scanner_signals,
+            "scannerStatus": self.scanner_status
         }

@@ -6,13 +6,14 @@ import json
 import logging
 import time
 import aiohttp
+import os
 from market_state import MarketState
 from binance_client import BinanceClient
 from scanner import SignalScanner
 
 # Configuration
 INITIAL_SYMBOL = "BTCUSDT"
-LUNARCRUSH_API_KEY = "lklp3a1wipds9h7t9yu7tibe2rmlohmn6tnjfm9ro"
+LUNARCRUSH_API_KEY = os.getenv("LUNARCRUSH_API_KEY", "")
 LUNARCRUSH_SSE_URL = f"https://lunarcrush.ai/sse?key={LUNARCRUSH_API_KEY}"
 
 logging.basicConfig(level=logging.INFO)
