@@ -69,8 +69,12 @@ export class MarketDataService {
     public isConnected$ = new BehaviorSubject<boolean>(false);
 
     constructor() {
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const host = window.location.hostname === 'localhost' ? 'localhost:8000' : window.location.host;
+        const wsUrl = `${protocol}//${host}/ws`;
+
         this.socket$ = webSocket({
-            url: 'ws://localhost:8000/ws',
+            url: wsUrl,
             openObserver: {
                 next: () => {
                     console.log('WebSocket connected');
