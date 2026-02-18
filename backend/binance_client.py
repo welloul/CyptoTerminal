@@ -113,10 +113,10 @@ class BinanceClient:
             is_buyer_maker = data["m"]
             self.state.add_trade(price, qty, is_buyer_maker)
             
-            # Real-time chart update (throttle this in frontend or backend if needed)
+            # Real-time chart update
             ts = data["E"]
-            # Append to CVD History if new minute or update last
-            # For simplicity, we just push to volatile state, frontend handles charting points
+            self.state.update_cvd_history(ts)
+            self.state.update_dpe()
             
         elif event_type == "forceOrder":
             order = data["o"]
@@ -133,6 +133,7 @@ class BinanceClient:
             self.state.update_price(float(data["p"]))
             self.state.funding_rate = float(data["r"])
             self.state.index_price = float(data["P"])
+            self.state.update_dpe() # Recalculate DPE on price move
 
     async def _poll_spot_price(self):
         while self._running:

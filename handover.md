@@ -10,8 +10,8 @@ A real-time "Bloomberg-style" trading terminal visualizing market tension using 
 
 ### Architecture
 - **Frontend**: Angular 19 (Standalone Components), RxJS WebSocket, Angular CDK (Drag & Drop), ApexCharts, SCSS.
-- **Backend**: Python 3.9+, FastAPI, aiohttp (Binance API, LunarCrush V4 REST + SSE, Fear & Greed, CoinGecko).
-- **Data Sources**: Binance Futures, LunarCrush V4 (REST + SSE), alternative.me, CoinGecko.
+- **Backend**: Python 3.9+, FastAPI, aiohttp (Binance API, LunarCrush V4 REST + SSE, CryptoCompare, Fear & Greed, CoinGecko).
+- **Data Sources**: Binance Futures, LunarCrush V4 (REST + SSE), CryptoCompare, alternative.me, CoinGecko.
 
 ### How to Run
 1. **LunarCrush API Key**: Ensure `LUNARCRUSH_API_KEY` is set in `backend/main.py`.
@@ -46,16 +46,12 @@ A real-time "Bloomberg-style" trading terminal visualizing market tension using 
 | `/news` | GET | Fear & Greed + Trending coins |
 | `/health` | GET | Server health check |
 
-### Architecture
-- **Frontend**: Angular 19 (Standalone), RxJS, Angular CDK, ApexCharts.
-- **Backend**: FastAPI, aiohttp (Binance, LunarCrush, CryptoCompare, Fear & Greed, CoinGecko).
-- **Data Streams**: Binance WS/REST, LunarCrush REST/SSE, CryptoCompare News REST.
-
 ### Current Status (v0.8.0)
-- **Momentum Scanner**: Real-time volatility detection across 200+ symbols.
-- **Top News Intelligence**: Dual-row scrolling tickers (Global Pulse + Asset-Specific Context).
-- **Interactive Exploration**: Click-to-Focus trending list for rapid asset switching and discovery.
-- **Readability**: Marquee animation slowed to 240s with hover-pause behavior.
-- **Social Dashboard**: Real-time social mentions, Galaxy Score, and AltRank via LunarCrush.
-- **Customizable Layout**: Persistent draggable widget arrangement via Angular CDK.
-- **Market State**: Unified state broadcast including technicals, sentiment, and dual-tier news.
+- **Momentum Scanner**: Real-time volatility detection across 200+ symbols using Binance Firehose.
+- **SQLite Persistence**: Scanner signals are stored in `binance_public_scanner.db` for session continuity.
+- **Top-Trader Intelligence**: Integrated long/short ratios for scanner signals (rate-limited).
+- **Dual-Tier News**: Scrolling tickers for Global Pulse + Asset-Specific Context with Click-to-Read links.
+- **Click-to-Sync**: Clicking scanner signals or trending assets instantly refocuses the entire terminal.
+- **Social Dashboard**: Real-time social mentions, Galaxy Score, and AltRank via LunarCrush V4.
+- **Customizable Layout**: Persistent draggable widget arrangement (V4) via Angular CDK.
+- **Market State**: Unified state broadcast (250ms) including technicals, sentiment, and news.

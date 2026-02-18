@@ -56,6 +56,11 @@ export interface MarketState {
         delta: number;
         top_ratio: number;
     }[];
+    dpe?: {
+        score: number;
+        label: string;
+        details: string;
+    };
 }
 
 @Injectable({

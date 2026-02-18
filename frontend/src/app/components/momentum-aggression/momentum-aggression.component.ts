@@ -14,11 +14,24 @@ import { TooltipDirective } from '../../directives/tooltip.directive';
         <span class="panel-subtitle">Aggression & Flow</span>
       </div>
 
-      <!-- Momentum Verdict -->
-      <div class="verdict-row" [class.bullish]="momentumVerdict === 'BUYING PRESSURE'" [class.bearish]="momentumVerdict === 'SELLING PRESSURE'" [class.neutral]="momentumVerdict === 'BALANCED'">
-        <span class="verdict-label">{{momentumVerdict}}</span>
-        <span class="verdict-desc">{{momentumDescription}}</span>
+      <!-- Efficiency Score (DPE) -->
+      <div class="dpe-section" *ngIf="data?.dpe">
+        <div class="dpe-header">
+          <span class="label" [appTooltip]="'Delta-to-Price Efficiency. Measures absorption and exhaustion.'">EFFICIENCY SCORE</span>
+          <span class="dpe-value" [class.stable]="data.dpe.score < 5" [class.unstable]="data.dpe.score >= 5 && data.dpe.score < 8" [class.critical]="data.dpe.score >= 8">
+            {{data.dpe.score}}/10
+          </span>
+        </div>
+        <div class="dpe-bar-bg">
+          <div class="dpe-bar-fill" [style.width.%]="data.dpe.score * 10" [class.stable]="data.dpe.score < 5" [class.unstable]="data.dpe.score >= 5 && data.dpe.score < 8" [class.critical]="data.dpe.score >= 8"></div>
+        </div>
+        <div class="dpe-footer">
+          <span class="dpe-label" [class.critical]="data.dpe.score >= 8">{{data.dpe.label}}</span>
+          <span class="dpe-details">{{data.dpe.details}}</span>
+        </div>
       </div>
+
+      <!-- Verdict -->
 
       <!-- CVD -->
       <div class="metrics-row">
@@ -130,6 +143,65 @@ import { TooltipDirective } from '../../directives/tooltip.directive';
     .verdict-row.bullish .verdict-label { color: var(--color-long); }
     .verdict-row.bearish .verdict-label { color: var(--color-short); }
     .verdict-row.neutral .verdict-label { color: var(--text-muted); }
+
+    /* DPE Section */
+    .dpe-section {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-primary);
+      border-radius: 6px;
+      padding: 10px;
+      margin-bottom: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .dpe-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .dpe-value {
+      font-size: 1rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+    }
+    .dpe-bar-bg {
+      height: 6px;
+      background: var(--bg-tertiary);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .dpe-bar-fill {
+      height: 100%;
+      transition: width 0.5s ease-out;
+    }
+    .dpe-footer {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .dpe-label {
+      font-size: 0.65rem;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--color-long);
+    }
+    .dpe-details {
+      font-size: 0.55rem;
+      color: var(--text-secondary);
+      font-family: var(--font-sans);
+    }
+
+    /* Score States */
+    .stable { color: var(--color-long); }
+    .dpe-bar-fill.stable { background: var(--color-long); }
+    
+    .unstable { color: var(--accent-amber); }
+    .dpe-bar-fill.unstable { background: var(--accent-amber); }
+    
+    .critical { color: var(--color-short); text-shadow: 0 0 8px rgba(225, 29, 72, 0.4); }
+    .dpe-bar-fill.critical { background: var(--color-short); box-shadow: 0 0 8px var(--color-short); }
 
     .metrics-row {
       display: flex;

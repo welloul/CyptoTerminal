@@ -59,6 +59,11 @@ class MarketState:
     scanner_signals: List[Dict] = field(default_factory=list) # Signals from scanner.py
     scanner_status: str = "Initializing..."
 
+    # Efficiency Score (DPE)
+    dpe_score: int = 0
+    dpe_label: str = "Balanced"
+    dpe_details: str = "Market is in equilibrium."
+
     @property
     def basis(self) -> float:
         return self.mark_price - self.spot_price if self.spot_price > 0 else 0.0
@@ -112,6 +117,72 @@ class MarketState:
         if len(self.scanner_signals) > 30:
             self.scanner_signals.pop(0)
 
+    def update_cvd_history(self, timestamp: int):
+        """Maintains a history of CVD values for charting."""
+        # Only add a new point if it's a new minute to keep the chart clean
+        if not self.cvd_history or (timestamp - self.cvd_history[-1]["time"]) >= 60000:
+            self.cvd_history.append({"time": timestamp, "cvd": self.cvd})
+            if len(self.cvd_history) > 100:
+                self.cvd_history.pop(0)
+        else:
+            # Update the last point for real-time smoothness
+            self.cvd_history[-1]["cvd"] = self.cvd
+
+    def update_dpe(self):
+        """Calculates Delta-to-Price Efficiency (DPE) Score (0-10)."""
+        score = 0
+        details = []
+
+        if len(self.price_history) < 5 or len(self.cvd_history) < 5:
+            return
+
+        # 1. PRICE DISPARITY / DIVERGENCE (4 Points)
+        curr_price = self.mark_price
+        prev_price = self.price_history[-2]["close"] if len(self.price_history) > 1 else curr_price
+        curr_cvd = self.cvd
+        prev_cvd = self.cvd_history[-2]["cvd"] if len(self.cvd_history) > 1 else curr_cvd
+
+        price_rising = curr_price > prev_price
+        cvd_falling = curr_cvd < prev_cvd
+        price_falling = curr_price < prev_price
+        cvd_rising = curr_cvd > prev_cvd
+
+        if price_rising and cvd_falling:
+            score += 4
+            details.append("Bearish Divergence (Price ^, CVD v)")
+        elif price_falling and cvd_rising:
+            score += 4
+            details.append("Bullish Divergence (Price v, CVD ^)")
+
+        # 2. ABSORPTION (3 Points)
+        # Check if volume is high but price movement is tight
+        vol_5m = self.taker_buy_vol_5m + self.taker_sell_vol_5m
+        price_range = abs(curr_price - prev_price)
+        
+        # Simple thresholding for demonstration
+        if vol_5m > 100000 and price_range < (curr_price * 0.0001):
+            score += 3
+            details.append("Whale Absorption Detected")
+
+        # 3. EXHAUSTION (3 Points)
+        # Using a simple moving average as a VWAP proxy for this state-only logic
+        prices = [p["close"] for p in self.price_history[-20:]]
+        avg_price = sum(prices) / len(prices)
+        std_dev = (sum((x - avg_price) ** 2 for x in prices) / len(prices)) ** 0.5
+        
+        if std_dev > 0:
+            z_score = (curr_price - avg_price) / std_dev
+            if abs(z_score) > 2:
+                score += 3
+                details.append("Overextended (Mean Reversion Risk)")
+
+        self.dpe_score = min(score, 10)
+        self.dpe_details = " | ".join(details) if details else "Market is in equilibrium."
+        
+        if self.dpe_score >= 8: self.dpe_label = "CRITICAL"
+        elif self.dpe_score >= 5: self.dpe_label = "UNSTABLE"
+        else: self.dpe_label = "BALANCED"
+
     def to_dict(self):
         return {
             "symbol": self.symbol,
@@ -151,5 +222,10 @@ class MarketState:
                 "asset": self.asset_news
             },
             "scannerSignals": self.scanner_signals,
-            "scannerStatus": self.scanner_status
+            "scannerStatus": self.scanner_status,
+            "dpe": {
+                "score": self.dpe_score,
+                "label": self.dpe_label,
+                "details": self.dpe_details
+            }
         }
