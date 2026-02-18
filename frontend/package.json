@@ -17,7 +17,7 @@
     "@angular/platform-browser": "^19.2.0",
     "@angular/platform-browser-dynamic": "^19.2.0",
     "@angular/router": "^19.2.0",
-    "apexcharts": "^3.54.1",
+    "apexcharts": "^4.0.0",
     "clsx": "^2.1.1",
     "lucide-angular": "^0.564.0",
     "motion": "^12.34.0",
