@@ -47,7 +47,7 @@ A real-time "Bloomberg-style" trading terminal visualizing market tension using 
 | `/health` | GET | Server health check |
 
 ### Current Status (v0.8.0)
-- **Momentum Scanner**: Real-time volatility detection across 200+ symbols using Binance Firehose.
+- **Momentum Scanner**: Real-time volatility detection (>1.5% 5m move + RSI/Vol spike) across 200+ symbols.
 - **SQLite Persistence**: Scanner signals are stored in `binance_public_scanner.db` for session continuity.
 - **Top-Trader Intelligence**: Integrated long/short ratios for scanner signals (rate-limited).
 - **Dual-Tier News**: Scrolling tickers for Global Pulse + Asset-Specific Context with Click-to-Read links.
